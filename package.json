@@ -1,0 +1,125 @@
+{
+  "name": "honda-ego-monorepo",
+  "version": "1.0.0",
+  "description": "Honda eGo - AI-Powered Electric Vehicle Service Platform",
+  "private": true,
+  "workspaces": [
+    "mobile-apps/driver-app",
+    "mobile-apps/customer-app",
+    "web-apps/admin-dashboard",
+    "web-apps/website-client",
+    "shared/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && docker-compose -f ../infrastructure/docker/docker-compose.dev.yml up -d",
+    "dev:frontend": "concurrently \"npm run dev:admin\" \"npm run dev:website\"",
+    "dev:admin": "cd web-apps/admin-dashboard && npm run dev",
+    "dev:website": "cd web-apps/website-client && npm run dev",
+    "dev:mobile": "concurrently \"npm run dev:driver\" \"npm run dev:customer\"",
+    "dev:driver": "cd mobile-apps/driver-app && npm run android",
+    "dev:customer": "cd mobile-apps/customer-app && npm run android",
+    
+    "build": "npm run build:frontend && npm run build:mobile",
+    "build:frontend": "concurrently \"npm run build:admin\" \"npm run build:website\"",
+    "build:admin": "cd web-apps/admin-dashboard && npm run build",
+    "build:website": "cd web-apps/website-client && npm run build",
+    "build:mobile": "concurrently \"npm run build:driver\" \"npm run build:customer\"",
+    "build:driver": "cd mobile-apps/driver-app && npm run build:android",
+    "build:customer": "cd mobile-apps/customer-app && npm run build:android",
+    
+    "test": "npm run test:frontend && npm run test:integration",
+    "test:frontend": "concurrently \"npm run test:admin\" \"npm run test:website\"",
+    "test:admin": "cd web-apps/admin-dashboard && npm test",
+    "test:website": "cd web-apps/website-client && npm test",
+    "test:mobile": "concurrently \"npm run test:driver\" \"npm run test:customer\"",
+    "test:driver": "cd mobile-apps/driver-app && npm test",
+    "test:customer": "cd mobile-apps/customer-app && npm test",
+    "test:integration": "cd tests/integration && npm test",
+    "test:e2e": "cd tests/e2e && npm test",
+    
+    "lint": "npm run lint:frontend && npm run lint:mobile",
+    "lint:frontend": "concurrently \"npm run lint:admin\" \"npm run lint:website\"",
+    "lint:admin": "cd web-apps/admin-dashboard && npm run lint",
+    "lint:website": "cd web-apps/website-client && npm run lint",
+    "lint:mobile": "concurrently \"npm run lint:driver\" \"npm run lint:customer\"",
+    "lint:driver": "cd mobile-apps/driver-app && npm run lint",
+    "lint:customer": "cd mobile-apps/customer-app && npm run lint",
+    
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    
+    "clean": "npm run clean:frontend && npm run clean:mobile && npm run clean:backend",
+    "clean:frontend": "concurrently \"npm run clean:admin\" \"npm run clean:website\"",
+    "clean:admin": "cd web-apps/admin-dashboard && rm -rf node_modules build",
+    "clean:website": "cd web-apps/website-client && rm -rf node_modules .next",
+    "clean:mobile": "concurrently \"npm run clean:driver\" \"npm run clean:customer\"",
+    "clean:driver": "cd mobile-apps/driver-app && rm -rf node_modules",
+    "clean:customer": "cd mobile-apps/customer-app && rm -rf node_modules",
+    "clean:backend": "cd backend && find . -name target -type d -exec rm -rf {} +",
+    
+    "install:all": "npm install && npm run install:frontend && npm run install:mobile",
+    "install:frontend": "concurrently \"npm run install:admin\" \"npm run install:website\"",
+    "install:admin": "cd web-apps/admin-dashboard && npm install",
+    "install:website": "cd web-apps/website-client && npm install",
+    "install:mobile": "concurrently \"npm run install:driver\" \"npm run install:customer\"",
+    "install:driver": "cd mobile-apps/driver-app && npm install",
+    "install:customer": "cd mobile-apps/customer-app && npm install",
+    
+    "docker:build": "docker-compose -f infrastructure/docker/docker-compose.yml build",
+    "docker:up": "docker-compose -f infrastructure/docker/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f infrastructure/docker/docker-compose.yml down",
+    "docker:logs": "docker-compose -f infrastructure/docker/docker-compose.yml logs -f",
+    
+    "k8s:deploy": "kubectl apply -f infrastructure/k8s/",
+    "k8s:delete": "kubectl delete -f infrastructure/k8s/",
+    "k8s:logs": "kubectl logs -f -l app=honda-ego",
+    
+    "release": "semantic-release",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.1",
+    "semantic-release": "^22.0.12"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hoangthai77641/Honda-eGo-Monorepo.git"
+  },
+  "keywords": [
+    "honda",
+    "ego",
+    "electric-vehicle",
+    "ride-sharing",
+    "microservices",
+    "react-native",
+    "spring-boot",
+    "ai-powered"
+  ],
+  "author": "Honda eGo Team",
+  "license": "MIT",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "conventional-changelog-lint"
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "name": "Honda eGo Full Stack Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "development",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installMaven": true,
+      "installGradle": false
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18",
+      "nodeGypDependencies": true,
+      "installYarnUsingApt": true
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "enableNonRootDocker": true
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "installDirectlyFromGitHubRelease": true
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Java Development
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "gabrielbb.vscode-lombok",
+        
+        // JavaScript/TypeScript
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        
+        // React/React Native
+        "ms-vscode.vscode-react-native",
+        "msjsdiag.vscode-react-native",
+        "bradlc.vscode-tailwindcss",
+        
+        // Database
+        "ms-mssql.mssql",
+        "ckolkman.vscode-postgres",
+        
+        // DevOps
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        
+        // Utilities
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-json"
+      ],
+      "settings": {
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-17",
+            "path": "/usr/local/sdkman/candidates/java/current"
+          }
+        ],
+        "java.compile.nullAnalysis.mode": "automatic",
+        "spring-boot.ls.checkJVM": false,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        }
+      }
+    }
+  },
+
+  "forwardPorts": [
+    // Backend Services
+    8080,   // API Gateway
+    8761,   // Eureka Server
+    8081,   // Auth Service
+    8082,   // User Service
+    8083,   // Order Service
+    8084,   // Location Service
+    
+    // Frontend Applications
+    3000,   // Admin Dashboard
+    3001,   // Website Client
+    3002,   // Development servers
+    
+    // Mobile Development
+    8081,   // Metro bundler
+    19000,  // Expo development
+    19001,  // Expo development
+    
+    // Databases
+    5432,   // PostgreSQL
+    6379    // Redis
+  ],
+
+  "portsAttributes": {
+    "8080": {
+      "label": "API Gateway",
+      "onAutoForward": "notify"
+    },
+    "8761": {
+      "label": "Eureka Server",
+      "onAutoForward": "silent"
+    },
+    "3000": {
+      "label": "Admin Dashboard",
+      "onAutoForward": "openBrowser"
+    },
+    "3001": {
+      "label": "Website Client",
+      "onAutoForward": "openBrowser"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Redis",
+      "onAutoForward": "silent"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "echo 'Honda eGo development environment ready! 🚗⚡'",
+
+  "remoteUser": "vscode",
+  "containerUser": "vscode"
+}
